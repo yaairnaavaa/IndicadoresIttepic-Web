@@ -1,0 +1,15 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div>
+      <h3>Reportes</h3>
+      <app-carrousel-reports-component (createAction)="navigateToCreateReport()">
+      </app-carrousel-reports-component>
+    </div>
+
+    <div>
+      <h3>Períodos de captura</h3>
+      <app-report-periods-container (createAction)="navigateToCreatePeriod()">
+      </app-report-periods-container>
+    </div>
+  </mat-card-content>
+</mat-card>

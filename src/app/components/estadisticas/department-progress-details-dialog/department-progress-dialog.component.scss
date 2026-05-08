@@ -1,0 +1,166 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  button{
+    margin-right: 16px;
+  }
+}
+
+.summary {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.055);
+  padding: 6px 12px;
+  border-radius: 15px;
+
+  margin-bottom: 20px;
+
+  p {
+    margin: 8px 0;
+  }
+}
+
+.toggle-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+
+  .filter-toggle {
+    margin-right: auto;
+  }
+}
+
+.filters-container {
+  overflow: hidden;
+  margin-bottom: 20px;
+
+  .filter-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    &>* {
+      flex: 1;
+      align-self: flex-end;
+    }
+  }
+
+  .range {
+    border-radius: 12px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    padding: 0 16px;
+    flex: 1;
+    min-width: 300px;
+
+    h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      text-align: center;
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    &-fields {
+      display: flex;
+      gap: 1rem;
+
+      &>* {
+        flex: 1;
+      }
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+
+.table-container {
+  overflow-x: auto;
+
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 15px;
+
+  th {
+    background-color: #303F9F;
+    font-weight: 600;
+    color: white;
+    font-size: medium;
+  }
+
+  td {
+    background-color: #f7f7f7;
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.department-info {
+  display: flex;
+  flex-direction: column;
+
+  .name {
+    font-weight: 500;
+  }
+
+  .short-name {
+    font-size: 0.8em;
+    color: #666;
+  }
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .percentage {
+    font-size: 1em;
+    font-weight: 600;
+  }
+
+  mat-progress-bar {
+    height: 8px;
+    border-radius: 4px;
+  }
+}
+
+.details {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+
+  .detail-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 1em;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.custom-progress-container {
+  width: 100%;
+  height: 4px;
+  /* Altura similar a mat-progress-bar */
+  background-color: #e0e0e0;
+  /* Fondo gris claro (como el de Angular Material) */
+  border-radius: 4px;
+  /* Bordes redondeados */
+  overflow: hidden;
+  /* Para que el interior no sobresalga */
+}
+
+.custom-progress-bar {
+  // background-color: #3fb566; /* Color azul (puedes cambiarlo) */
+  height: 100%;
+  transition: width 0.3s ease;
+  /* Animación suave al cambiar el progreso */
+  border-radius: 4px;
+}

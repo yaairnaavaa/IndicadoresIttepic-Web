@@ -1,0 +1,121 @@
+<mat-card>
+  <div class="card-header">
+    <div class="header-section">
+      <button mat-icon-button class="minimize-button" (click)="toggleMinimized()" [matTooltip]="isMinimized ? 'Expandir sección' : 'Minimizar sección'">
+        <mat-icon [class.minimized]="isMinimized">expand_more</mat-icon>
+      </button>
+      <h3 class="card-title">Histórico de indicadores 
+        <mat-icon matTooltip="Se muestran los datos de todos los indicadores capturados. Para filtrar use los filtros de la parte superior">info</mat-icon>
+      </h3>
+    </div>
+    
+    <!-- Toggle para modo comparación -->
+    <div class="comparison-toggle" >
+      <mat-slide-toggle 
+        [(ngModel)]="comparisonMode" 
+        (onChange)="toggleComparisonMode()"
+        color="primary">
+        <span class="toggle-label">
+          Modo Comparación
+        </span>
+      </mat-slide-toggle>
+    </div>
+  </div>
+  
+  <mat-card-content>
+    <div class="main-layout" [@expandCollapse]="isMinimized ? 'collapsed' : 'expanded'">
+
+      <!-- Gráfica Normal -->
+      <div class="chart-section" *ngIf="!comparisonMode">
+        <app-indicator-chart
+          [reportData]="reportData"
+          [visibleIndicators]="filteredIndicators">
+        </app-indicator-chart>
+      </div>
+
+      <!-- Gráfica de Comparación -->
+      <div class="chart-section" *ngIf="comparisonMode">
+        <app-indicator-comparison-chart
+          [reportData]="reportData"
+          [visibleIndicators]="visibleIndicators"
+          [currentFilters]="currentFilters">
+        </app-indicator-comparison-chart>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-section" *ngIf="!noDataAvailable && !isLoading && !errorMessage">
+        <div class="table-container">
+          <div class="filter-container">
+            <!-- Filtro de texto -->
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Buscar por clave o nombre</mat-label>
+              <input matInput placeholder="Clave o nombre" [(ngModel)]="searchTerm"
+                (ngModelChange)="updateFilteredIndicators()" />
+            </mat-form-field>
+          </div>
+
+          <table mat-table [dataSource]="paginatedIndicators" class="mat-elevation-z1 indicators-table">
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="toggleAllRows()" [checked]="allSelected()" [indeterminate]="someSelected()">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let indicator">
+                <mat-checkbox [(ngModel)]="indicator.visible"
+                  (click)="handleCheckboxClick(indicator, $event)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- Clave -->
+            <ng-container matColumnDef="key">
+              <th mat-header-cell *matHeaderCellDef>Clave</th>
+              <td mat-cell *matCellDef="let indicator">{{indicator.key}}</td>
+            </ng-container>
+
+            <!-- Nombre -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let indicator">{{indicator.name}}</td>
+            </ng-container>
+
+            <!-- Departamento -->
+            <ng-container matColumnDef="department">
+              <th mat-header-cell *matHeaderCellDef>Departamento</th>
+              <td mat-cell *matCellDef="let indicator">{{indicator.department}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="report">
+              <th mat-header-cell *matHeaderCellDef>Reporte</th>
+              <td mat-cell *matCellDef="let indicator">{{indicator.report}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="handleRowClick(row, $event)"
+              [class.selected]="isSelected(row)">
+            </tr>
+          </table>
+          <mat-paginator [length]="filteredIndicators.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+            [pageIndex]="pageIndex" (page)="onPageChange($event)" showFirstLastButtons
+            aria-label="Select page of indicators">
+          </mat-paginator>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Cargando datos...</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{errorMessage}}
+      </div>
+
+      <div *ngIf="noDataAvailable && !isLoading && !errorMessage" class="no-data-container">
+        <mat-icon>info</mat-icon>
+        <p>No hay datos disponibles</p>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

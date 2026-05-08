@@ -1,0 +1,156 @@
+<div class="table-container">
+  <div *ngIf="hasData" class="search-container">
+    <button mat-stroked-button (click)="toggleFilterPanel()" class="filter-toggle" type="button">
+      <mat-icon>{{isFilterExpanded ? 'filter_alt' : 'filter_alt_off'}}</mat-icon>
+      {{isFilterExpanded ? 'Ocultar filtros' : 'Mostrar filtros'}}
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="Menu" *ngIf="showExportButton">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu class="cardWithShadow" #Menu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="exportToExcel()">
+        <mat-icon>download</mat-icon>
+        Exportar a Excel
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="filter-panel" [@filterExpand]="isFilterExpanded ? 'expanded' : 'collapsed'">
+    <div class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Buscar por clave o nombre</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Clave o nombre">
+          <button matSuffix mat-icon-button *ngIf="searchControl.value" (click)="searchControl.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Departamentos</mat-label>
+          <mat-select [formControl]="departmentsControl" multiple>
+            <mat-option *ngFor="let dept of allDepartments" [value]="dept">{{dept}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-row">
+        <div class="number-range">
+          <h4>Meta</h4>
+          <div class="number-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Mínima</mat-label>
+              <input matInput type="number" [formControl]="minGoalControl" placeholder="Ej. 10">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Máxima</mat-label>
+              <input matInput type="number" [formControl]="maxGoalControl" placeholder="Ej. 100">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-stroked-button type="button" (click)="clearFilters()">
+          <mat-icon>clear_all</mat-icon>
+          Limpiar filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select" *ngIf="showCheckboxes">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="toggleAllRows()" [checked]="allSelected()" [indeterminate]="someSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()" [checked]="isSelected(row)" (change)="toggleSelection(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Index Column -->
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.index }}</td>
+    </ng-container>
+
+    <!-- Key Column -->
+    <ng-container matColumnDef="key">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Clave</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.key }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.name }}</td>
+    </ng-container>
+
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Descripcion</th>
+      <td mat-cell *matCellDef="let indicator" [ngClass]="{'no-description': !indicator.description}">
+        {{ indicator.description || 'Sin descripción' }}
+      </td>
+
+    </ng-container>
+
+    <!-- Department Column -->
+    <ng-container matColumnDef="departments">
+      <th mat-header-cell *matHeaderCellDef>Departamentos</th>
+      <td mat-cell *matCellDef="let indicator">
+        <ul>
+          <li *ngFor="let dept of indicator.departments">{{ dept.name }}</li>
+        </ul>
+      </td>
+    </ng-container>
+
+    <!-- Goal Column -->
+    <ng-container matColumnDef="goal">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Meta</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.goal }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions" *ngIf="showActions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let indicator">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onEdit(indicator)">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="handleRowClick(row, $event)"
+      [class.selected]="showCheckboxes && isSelected(row)">
+    </tr>
+  </table>
+
+  <div *ngIf="!hasData" class="empty-state">
+    <mat-icon>inbox</mat-icon>
+    <h3>No hay indicadores disponibles</h3>
+    <p>Comienza creando tu primer indicador</p>
+    <button mat-button (click)="onCreate()">
+      <mat-icon>add</mat-icon>
+      Crear indicador
+    </button>
+  </div>
+
+  <mat-paginator [length]="dataSource.data.length" [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions" showFirstLastButtons aria-label="Select page of indicators">
+  </mat-paginator>
+</div>

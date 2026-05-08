@@ -1,0 +1,35 @@
+<div class="chart-container" *ngIf="!noDataAvailable" >
+  
+  <div class="chart-header">
+    <h4 class="chart-title">
+      Comparación por {{ comparisonType }}
+    </h4>
+    <p class="chart-subtitle">Comparando valores de indicadores seleccionados</p>
+  </div>
+
+  <apx-chart 
+    [series]="chartOptions.series!" 
+    [chart]="chartOptions.chart!" 
+    [stroke]="chartOptions.stroke!" 
+    [legend]="chartOptions.legend!" 
+    [yaxis]="chartOptions.yaxis!"
+    [xaxis]="chartOptions.xaxis!" 
+    [dataLabels]="chartOptions.dataLabels!" 
+    [colors]="chartOptions.colors!">
+  </apx-chart>
+</div>
+
+<div *ngIf="noDataAvailable" class="no-data-message">
+  <mat-icon>info</mat-icon>
+  <div>
+    <p><strong>No hay datos disponibles para comparar</strong></p>
+    <p class="help-text">
+      Para activar el modo comparación, asegúrate de:
+    </p>
+    <ul class="help-list">
+      <li>Seleccionar múltiples opciones en los filtros (departamentos, períodos, semestres o años)</li>
+      <li>Tener indicadores seleccionados en la tabla inferior</li>
+      <li>Que existan datos para las combinaciones seleccionadas</li>
+    </ul>
+  </div>
+</div>

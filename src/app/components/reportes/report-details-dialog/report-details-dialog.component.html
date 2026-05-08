@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Detalles del reporte</h2>
+<mat-dialog-content class="content">
+  <h3>📌 {{ data.name }}</h3>
+
+  <p *ngIf="data.description"><strong>🗒️ Descripción:</strong>{{data.description}}</p>
+  <p><strong>📊 Lista de indicadores:</strong></p>
+
+  <app-indicator-table 
+    [data]="data.indicators" 
+    [displayedColumns]="displayedColumns"
+  >
+  </app-indicator-table>
+  
+</mat-dialog-content>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</div>

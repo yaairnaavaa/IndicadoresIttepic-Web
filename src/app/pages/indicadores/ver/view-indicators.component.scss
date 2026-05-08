@@ -1,0 +1,15 @@
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  gap: 16px;
+
+  h3 {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 500;
+  }
+}

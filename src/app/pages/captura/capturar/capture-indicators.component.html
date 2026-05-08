@@ -1,0 +1,117 @@
+<div *ngIf="!loading && reportPeriods.length === 0" class="empty-state" @fadeInOut>
+  <img src="assets/images/backgrounds/empty_state-2.svg" alt="Sin datos">
+  <p class="text-lg font-semibold">No hay períodos de captura disponibles</p>
+</div>
+
+<div *ngIf="reportPeriods.length > 0" class="container" @fadeInOut>
+  <!-- Left Panel - Report Periods -->
+  <div class="periods-panel">
+    <h3 style="margin-bottom: 16px; color: var(--mat-sys-on-background); font-weight: 700;">📊 Reportes activos</h3>
+
+    <mat-card *ngFor="let period of reportPeriods; let i = index" (click)="onReportPeriodSelect(i, $event)"
+      class="report-period-card" [class.selected]="selectedReportPeriodIndex === i">
+      <mat-card-header>
+        <mat-card-title class="period-title">{{ period.reportId.name }}</mat-card-title>
+        <mat-card-subtitle class="period-subtitle">
+          <span class="semester">
+            {{ period.semester }} {{period.year }}
+          </span>
+        </mat-card-subtitle>
+        <mat-card-subtitle class="period-subtitle">
+          <strong> -> Fecha límite para capturar:</strong> {{ period.dueDate | date: 'longDate' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+    </mat-card>
+  </div>
+
+  <div class="right-panel">
+    <!-- Middle Panel - Indicators -->
+    <div class="indicators-panel" *ngIf="selectedReportPeriodId">
+      <h3 style="margin-bottom: 16px; color: var(--mat-sys-on-background); font-weight: 700;">📝 Indicadores pendientes</h3>
+
+      <div *ngIf="indicators.length === 0" class="empty-indicators">
+        <p>Todos los indicadores para este período han sido capturados 🎉</p>
+      </div>
+
+      <mat-card *ngFor="let indicator of indicators; let i = index" (click)="onIndicatorSelect(i, $event)"
+        class="indicator-card" [class.selected]="selectedIndicatorIndex === i">
+        <mat-card-header>
+          <mat-card-title class="indicator-title">{{ indicator.name }}</mat-card-title>
+        </mat-card-header>
+      </mat-card>
+    </div>
+
+    <!-- Vertical Divider -->
+    <div class="divider"></div>
+
+    <!-- Right Panel - Form -->
+    <div class="form-panel" *ngIf="selectedReportPeriodId && indicators.length > 0">
+      <ng-container *ngIf="dataArray.controls.length > 0">
+        <form [formGroup]="selectedFormGroup">
+          <div class="form-header">
+            <h2 class="form-title">{{ indicators[selectedIndicatorIndex].name }}</h2>
+            <p class="form-subtitle">
+              {{indicators[selectedIndicatorIndex].description || 'Complete los datos requeridos para este indicador'}}
+            </p>
+          </div>
+
+          <div class="form-details">
+            <div class="detail-item">
+              <mat-icon class="m-x-5">label_important</mat-icon>
+              <strong>Clave:</strong>
+              <mat-chip>{{ indicators[selectedIndicatorIndex].key }}</mat-chip>
+            </div>
+
+            <div class="detail-item">
+              <mat-icon class="m-x-5">flag</mat-icon>
+              <strong>Meta programada:</strong>
+              <mat-chip class="goal-chip">{{ indicators[selectedIndicatorIndex].goal }}</mat-chip>
+            </div>
+
+            <div *ngIf="isJefeEspecial()">
+              <div class="detail-item">
+                <mat-icon class="m-x-5">business</mat-icon>
+                <strong>Departamentos no capturados:</strong>
+
+              </div>
+              <div class="departments-list">
+                <ul>
+                  <li *ngFor="let dept of getDepartmentsForIndicator(selectedIndicatorIndex)">{{dept.name}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Valor del indicador</mat-label>
+            <input matInput formControlName="value" type="number" />
+            <mat-icon matSuffix>assessment</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Observaciones (opcional)</mat-label>
+            <textarea matInput formControlName="observation" rows="3"></textarea>
+            <mat-icon matSuffix>notes</mat-icon>
+          </mat-form-field>
+
+          <div *ngIf="isJefeEspecial() && indicatorHasMultipleDepartments(selectedIndicatorIndex)">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Selecciona el departamento</mat-label>
+              <mat-select [formControl]="departmentIdControl">
+                <mat-option *ngFor="let dept of getDepartmentsForIndicator(selectedIndicatorIndex)" [value]="dept._id">
+                  {{ dept.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="selectedFormGroup.invalid">
+              <mat-icon>check_circle</mat-icon> Enviar datos
+            </button>
+          </div>
+        </form>
+      </ng-container>
+    </div>
+  </div>
+</div>

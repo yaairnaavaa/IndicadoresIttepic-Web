@@ -1,0 +1,41 @@
+html .dark-theme {
+  color-scheme: dark;
+
+  // Variables locales
+  --marco: #000000;
+  --contenedor: #0e0e0e;
+  --card-bg: #070707;
+  --card-bg-variant: #0f0f0f;
+  --shadow: rgba(143, 143, 143, 0.075);
+  
+  // Variables del sistema Material
+  --mat-sys-background: var(--marco);
+  --mat-sys-surface-bright: #1a1a1a;
+  --mat-sys-surface: var(--marco);
+  --mat-sys-surface-container: var(--marco);
+  --mat-sys-surface-container-low: #2a2a2a;
+  --mat-sys-surface-container-lowest: #111111;
+  --mat-sys-on-background: #e0e0e0;
+  --mat-sys-outline: #444;
+  --mat-sys-outline-variant: #333;
+  
+  // Variables de componentes MDC/Material
+  --mdc-outlined-text-field-hover-outline-color: #555;
+  --mdc-checkbox-unselected-hover-state-layer-color: #404040;
+  --mdc-switch-unselected-track-color: #2a2a2a;
+  --mdc-dialog-supporting-text-color: var(--mat-sys-on-background);
+  
+  // Variables de componentes Mat
+  --mat-menu-item-hover-state-layer-color: #1a1a1a;
+  --mat-standard-button-toggle-state-layer-color: #1a1a1a;
+  --mat-option-focus-state-layer-color: #1a1a1a;
+  --mat-option-hover-state-layer-color: #1a1a1a;
+  --mat-stepper-header-focus-state-layer-color: #1a1a1a;
+  --mat-stepper-header-hover-state-layer-color: #1a1a1a;
+  --mat-expansion-header-hover-state-layer-color: #1a1a1a;
+  --mat-badge-text-color: #000000;
+  --mat-table-background-color: var(--card-bg);
+  
+  // Variable de layout
+  --layout-bg: var(--contenedor);
+}

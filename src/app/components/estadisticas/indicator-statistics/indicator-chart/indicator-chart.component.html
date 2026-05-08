@@ -1,0 +1,20 @@
+<div class="chart-container" *ngIf="!noDataAvailable" (mouseenter)="onChartMouseEnter()"
+  (mouseleave)="onChartMouseLeave()" (wheel)="onChartWheel($event)">
+  
+  <apx-chart 
+    [series]="chartOptions.series!" 
+    [chart]="chartOptions.chart!" 
+    [labels]="chartOptions.labels!"
+    [stroke]="chartOptions.stroke!" 
+    [legend]="chartOptions.legend!" 
+    [yaxis]="chartOptions.yaxis!"
+    [xaxis]="chartOptions.xaxis!" 
+    [dataLabels]="chartOptions.dataLabels!" 
+    [colors]="chartOptions.colors!"
+    [plotOptions]="chartOptions.plotOptions!">
+  </apx-chart>
+</div>
+
+<div *ngIf="noDataAvailable" class="no-data-message">
+  <p>No hay datos disponibles para mostrar en el gráfico</p>
+</div>

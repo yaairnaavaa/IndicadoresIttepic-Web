@@ -1,0 +1,169 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.041);
+  background-color: var(--card-bg);
+
+  .search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 0 24px;
+
+    .filter-toggle {
+      margin-right: auto;
+    }
+  }
+
+  .filter-panel {
+    padding: 0 24px;
+    overflow: hidden;
+  }
+
+  .filter-form {
+    padding: 16px 0;
+
+    .filter-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+
+      &>* {
+        flex: 1 1 auto;
+        align-self: flex-end;
+      }
+    }
+
+    .date-range,
+    .number-range {
+      border-radius: 12px;
+      border: 1px solid var(--mat-sys-outline-variant);
+      padding: 0 16px;
+      flex: 1;
+      min-width: 300px;
+
+      h4 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        text-align: center;
+        color: rgba(0, 0, 0, 0.6);
+      }
+
+      &-fields {
+        display: flex;
+        gap: 1rem;
+
+        &>* {
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  table {
+    width: 100%;
+    padding: 24px 24px 0 24px;
+  }
+
+  th {
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    color: var(--mat-sys-on-surface-variant) !important;
+  }
+
+  mat-paginator {
+    padding: 0 24px 24px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+
+    .filter-form {
+      .filter-row {
+        flex-direction: column;
+
+        &>* {
+          width: 100%;
+        }
+      }
+
+      .date-range,
+      .number-range {
+        min-width: 100%;
+
+        &-fields {
+          flex-direction: column;
+        }
+      }
+    }
+
+    table {
+      min-width: 600px;
+    }
+  }
+}
+
+tr.example-detail-row {
+  height: 0;
+  overflow: hidden;
+
+  td {
+    padding: 0 !important;
+  }
+}
+
+tr.example-element-row {
+  td {
+    border-bottom: none !important;
+  }
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: block;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 140px;
+  padding: 0 28px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+  
+  .empty-state-content {
+    max-width: 400px;
+    margin: 0 auto;
+
+    .empty-state-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0 0 16px 0;
+      font-size: 14px;
+    }
+  }
+}

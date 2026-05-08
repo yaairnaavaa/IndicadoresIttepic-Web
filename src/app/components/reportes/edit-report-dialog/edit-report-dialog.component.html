@@ -1,0 +1,74 @@
+<h2 mat-dialog-title>Editar Reporte</h2>
+<mat-dialog-content class="p-t-4">
+  <form [formGroup]="editForm" (ngSubmit)="onSave()" class="form-container">
+
+    <!-- SELECCIÓN NOMBRE REPORTE -->
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+
+      <!-- SELECT -->
+      <mat-form-field appearance="outline" style="flex: 1 1 300px; min-width: 250px;">
+        <mat-label>Selecciona nombre del reporte</mat-label>
+        <mat-select formControlName="reportNameSelect" required>
+          <mat-option *ngFor="let option of reportNameOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="editForm.get('reportNameSelect')?.hasError('required')">
+          Debes seleccionar un nombre de reporte.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- INPUT MANUAL (ANIMADO) -->
+      <div *ngIf="editForm.get('reportNameSelect')?.value?.startsWith('Otro')" @fadeSlide
+        style="flex: 1 1 300px; min-width: 250px;">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nuevo reporte</mat-label>
+          <input matInput formControlName="customReportName" placeholder="Ingresa nombre del reporte">
+          <mat-error *ngIf="editForm.get('customReportName')?.hasError('required')">
+            Debes ingresar un nombre.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <!-- DESCRIPCION -->
+    <mat-form-field appearance="outline" class="w-100 ">
+      <mat-label>Descripción (opcional)</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+
+    <!-- INDICADORES SELECCIONADOS -->
+    <div class="selected-list">
+      <h4>Indicadores seleccionados:</h4>
+      <mat-chip-listbox>
+        <ng-container *ngIf="selectedIndicators.length > 0; else noIndicators">
+          <mat-chip *ngFor="let ind of selectedIndicators" color="primary" selected (removed)="removeSelected(ind)"
+            [matTooltip]="ind.name" matTooltipPosition="below">
+            {{ ind.name | truncate:36 }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </ng-container>
+        <ng-template #noIndicators>
+          <div class="no-indicators-message">
+            <mat-icon>info</mat-icon>
+            <span>No hay indicadores seleccionados</span>
+          </div>
+        </ng-template>
+      </mat-chip-listbox>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- TABLA -->
+    <app-indicator-table [data]="indicatorDefinitions" [displayedColumns]="displayedColumns" [showCheckboxes]="true"
+      [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" (rowSelected)="onIndicatorsSelected($event)" [preSelectedIndicators]="selectedIndicators">
+    </app-indicator-table>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="editForm.invalid">Guardar</button>
+</mat-dialog-actions>

@@ -1,0 +1,18 @@
+<ng-container *ngIf="!isLoading; else loadingState">
+  <!-- Vista en tabla -->
+  <div @fadeInOut>
+    <ng-container>
+      <app-indicator-table [data]="indicators" [displayedColumns]="displayedColumns" [showActions]="true"
+        [showExportButton]="true" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 100]"
+        (editAction)="editIndicator($event)" (createAction)="navigateToCreate()">
+      </app-indicator-table>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-template #loadingState>
+  <div class="loading-state">
+    <mat-spinner diameter="50"></mat-spinner>
+    <h3>Cargando indicadores...</h3>
+  </div>
+</ng-template>

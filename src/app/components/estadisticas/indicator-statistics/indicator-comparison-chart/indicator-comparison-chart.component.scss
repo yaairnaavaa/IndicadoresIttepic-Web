@@ -1,0 +1,172 @@
+.chart-container {
+  width: 100%;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 15px;
+  padding: 16px;
+}
+
+.chart-header {
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding-bottom: 15px;
+
+  .chart-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+
+  }
+
+  .chart-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: var(--mat-sys-on-surface-variant);
+    font-style: italic;
+  }
+}
+
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  padding: 40px;
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+
+  background-color: var(--card-bg);
+  border: 1px dashed var(--mat-sys-outline-variant);
+  border-radius: 15px;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--mat-sys-on-surface);
+    margin-bottom: 20px;
+  }
+
+  p {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+
+    &:first-of-type {
+      font-weight: 600;
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+
+  .help-text {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .help-list {
+    text-align: left;
+    max-width: 500px;
+    margin: 0;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  }
+}
+
+:host ::ng-deep .apexcharts-xaxis-label {
+  color: rgb(255, 0, 0) !important;
+}
+
+
+// Estilos para la leyenda
+:host ::ng-deep .apexcharts-legend {
+  padding: 10px 0 !important;
+}
+
+:host ::ng-deep .apexcharts-legend-text {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+// Estilos para los tooltips
+:host ::ng-deep .apexcharts-tooltip {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--mat-sys-outline-variant) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+:host ::ng-deep .apexcharts-tooltip-title {
+  font-weight: 600 !important;
+  background: var(--card-bg)  !important;
+  font-size: 13px !important;
+  margin-bottom: 5px !important;
+  border-bottom: 1px solid var(--mat-sys-outline-variant) !important;
+  padding-bottom: 5px !important;
+}
+
+@media (max-width: 1000px) {
+  .chart-container {
+    min-height: 350px;
+    padding: 12px;
+  }
+
+  .chart-header {
+    .chart-title {
+      font-size: 16px;
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .chart-subtitle {
+      font-size: 13px;
+    }
+  }
+
+  .no-data-message {
+    padding: 30px 20px;
+    min-height: 250px;
+
+    mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+
+    .help-text {
+      font-size: 13px;
+    }
+
+    .help-list {
+      li {
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .chart-header {
+    .chart-title {
+      font-size: 15px;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+}

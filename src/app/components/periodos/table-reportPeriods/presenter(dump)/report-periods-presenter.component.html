@@ -1,0 +1,284 @@
+<div *ngIf="dataSource.data.length > 0; else emptyState" class="table-container">
+  <div class="search-container">
+    <button mat-stroked-button (click)="toggleFilterPanel()" class="filter-toggle">
+      <mat-icon>{{isFilterExpanded ? 'filter_alt' : 'filter_alt_off'}}</mat-icon>
+      {{isFilterExpanded ? 'Ocultar filtros' : 'Mostrar filtros'}}
+      
+    </button>
+
+    <button mat-flat-button (click)="onCreate()">
+      <mat-icon>add</mat-icon>
+      Nuevo período
+    </button>
+    
+    <button mat-icon-button [matMenuTriggerFor]="Menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu class="cardWithShadow" #Menu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="exportToExcel()">
+        <mat-icon>download</mat-icon>
+        Exportar a Excel
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="filter-panel" [@filterExpand]="isFilterExpanded ? 'expanded' : 'collapsed'">
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="report-name">
+          <mat-label>Nombre del reporte</mat-label>
+          <input matInput formControlName="name" placeholder="Buscar por nombre" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Semestre</mat-label>
+          <mat-select formControlName="semester" multiple>
+            <mat-option value="ENE-JUN">ENE-JUN</mat-option>
+            <mat-option value="AGO-DIC">AGO-DIC</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estatus</mat-label>
+          <mat-select formControlName="status" multiple>
+            <mat-option value="Activo">Activo</mat-option>
+            <mat-option value="Inactivo">Inactivo</mat-option>
+            <mat-option value="Finalizado">Finalizado</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-row">
+        <div class="number-range">
+          <h4>Año</h4>
+          <div class="number-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput type="number" formControlName="yearFrom" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput type="number" formControlName="yearTo" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="date-range">
+          <h4>Fecha de inicio</h4>
+          <div class="date-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput [matDatepicker]="pickerStartFrom" formControlName="startDateFrom"
+                (click)="pickerStartFrom.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerStartFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerStartFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput [matDatepicker]="pickerStartTo" formControlName="startDateTo"
+                (click)="pickerStartTo.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerStartTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerStartTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="date-range">
+          <h4>Fecha de cierre</h4>
+          <div class="date-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput [matDatepicker]="pickerEndFrom" formControlName="endDateFrom"
+                (click)="pickerEndFrom.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerEndFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerEndFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput [matDatepicker]="pickerEndTo" formControlName="endDateTo" (click)="pickerEndTo.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerEndTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerEndTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="date-range">
+          <h4>Fecha límite de captura</h4>
+          <div class="date-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput [matDatepicker]="pickerDueFrom" formControlName="dueDateFrom"
+                (click)="pickerDueFrom.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerDueFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerDueFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput [matDatepicker]="pickerDueTo" formControlName="dueDateTo" (click)="pickerDueTo.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerDueTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerDueTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-stroked-button type="button" (click)="clearFilters()">
+          <mat-icon>clear_all</mat-icon>
+          Limpiar filtros
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
+
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.index }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="report">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Reporte</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.reportId.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="semester">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Semestre</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.semester }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Año</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.year }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de inicio</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.startDate | date:'longDate'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="endDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de cierre</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.endDate | date:'longDate'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dueDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha límite de captura</th>
+      <td mat-cell *matCellDef="let reportPeriod">{{ reportPeriod.dueDate | date:'longDate' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estatus</th>
+      <td mat-cell *matCellDef="let reportPeriod">
+        <span class="rounded-pill f-s-12 f-w-500 p-x-8 p-y-4" [ngClass]="{
+      'bg-light-warning text-warning': reportPeriod.isActive === false && !reportPeriod.isExpired,
+      'bg-light-success text-success': reportPeriod.isActive === true && !reportPeriod.isExpired,
+      'bg-light-error text-error': reportPeriod.isExpired
+    }">
+          {{ reportPeriod.isExpired ? 'Finalizado' : (reportPeriod.isActive ? 'Activo' : 'Inactivo') }}
+        </span>
+      </td>
+    </ng-container>
+
+
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let reportPeriod">
+        <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="$event.stopPropagation(); onEdit(reportPeriod)">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expand">
+      <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+        &nbsp;
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button aria-label="expand row"
+          (click)="expandedElement = expandedElement === element ? null : element;$event.stopPropagation()">
+          @if(expandedElement !== element) {
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          } @if(expandedElement === element) {
+          <mat-icon>keyboard_arrow_up</mat-icon>
+          }
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'" class="example-element-detail">
+          <div class="p-15 rounded b-1 m-b-16 m-x-18">
+            <div class="d-flex align-items-center gap-12">
+              <div>
+                <div class="f-s-14 f-w-600 ">
+                  {{ element.reportId.name }}
+                </div>
+              </div>
+            </div>
+
+            <div class="f-s-14 m-t-8" *ngIf="element.reportId.description">
+              🗒️ Descripción: {{ element.reportId.description }}
+            </div>
+
+            <div class="f-s-14 m-t-8">
+              📝 Lista de indicadores en el reporte:
+              <app-indicator-table [data]="element.reportId.indicators" [displayedColumns]="['key','name','departments','goal']">
+              </app-indicator-table>
+            </div>
+
+            <div class="f-s-14 m-t-8">
+              📌 Reporte creado el {{ element.createdAt | date:'fullDate' }}
+            </div>
+            <div class="f-s-14 m-t-8">
+              ⏰ Fecha límite de captura: {{ element.dueDate | date:'fullDate' }}
+            </div>
+            <div class="f-s-14 m-t-8" *ngIf="element.comments">
+              Comentarios del capturador: {{ element.comments }}
+            </div>
+
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+  <mat-paginator [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons>
+  </mat-paginator>
+</div>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <div class="empty-state-content">
+      <mat-icon class="empty-state-icon">assignment</mat-icon>
+      <h3>No hay períodos de captura registrados</h3>
+      <p>Actualmente no hay períodos de captura disponibles. Crea uno nuevo para comenzar.
+        <button mat-button (click)="onCreate()">
+          <mat-icon>add</mat-icon>
+          Crear periodo
+        </button>
+      </p>
+    </div>
+  </div>
+</ng-template>

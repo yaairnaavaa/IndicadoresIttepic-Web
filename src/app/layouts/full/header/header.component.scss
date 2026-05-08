@@ -1,0 +1,108 @@
+.initials-avatar {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background-color: #9dc9f2;
+  color: #095faf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 17px;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.dep-info{
+  border: 1px solid var(--mat-sys-outline);
+  background: var(--mat-sys-background);
+  color: var(--mat-sys-on-surface-variant);
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.theme-toggle-btn {
+  transition: all 1s ease;
+
+  .theme-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+  }
+
+  &:active .theme-icon {
+    transform: scale(0.9);
+  }
+}
+
+.dark-theme .theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Nuevos estilos para el selector de tema en el menú */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin: 6px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(135, 173, 255, 0.185);
+  }
+
+  .theme-label {
+    font-weight: 500;
+    color: inherit;
+  }
+
+  .theme-toggle-box {
+    display: flex;
+    background-color: rgba(189, 189, 189, 0.116);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.055);
+    border-radius: 20px;
+    padding: 4px;
+    position: relative;
+    width: 70px;
+    height: 32px;
+
+    .theme-icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 24px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      z-index: 1;
+
+      &.active {
+        background-color: #224bff33;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      svg {
+        fill: currentColor;
+      }
+    }
+  }
+}
+
+.dark-theme {
+  .theme-selector-container {
+    .theme-toggle-box {
+      background-color: rgba(255, 255, 255, 0.16);
+
+      .theme-icon-container.active {
+        background-color: #424242;
+      }
+    }
+  }
+
+
+}

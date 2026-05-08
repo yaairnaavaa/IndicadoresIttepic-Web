@@ -1,0 +1,107 @@
+<mat-card class="cardWithShadow" @fadeInOut>
+
+  <mat-card-content>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <span style="font-size: 1.125rem; font-weight: 600;">Nuevo período de captura</span>
+
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- Carrusel de Reports -->
+      <div *ngIf="reports.length > 0; else noReportsTemplate" class="reports-carousel-container">
+        <h4>Selecciona un reporte:</h4>
+        <div class="reports-carousel">
+          <div *ngFor="let report of reports" [class.selected]="selectedReportId === report._id"
+            (click)="selectReport(report._id!)" class="report-card">
+            <div class="report-card-header">
+              <h2>{{ report.name }}</h2>
+
+              <button mat-icon-button [matMenuTriggerFor]="Menu">
+                <mat-icon style="color: white;">more_vert</mat-icon>
+              </button>
+              <mat-menu class="cardWithShadow" #Menu="matMenu" xPosition="before">
+                <button mat-menu-item (click)="openDetailsDialog(selectedReportId!)">
+                  <mat-icon class="dark">info</mat-icon>
+                  Ver detalles
+                </button>
+              </mat-menu>
+            </div>
+            <div class="report-card-content">
+              <mat-chip>
+                <mat-icon matChipAvatar>format_list_bulleted</mat-icon>
+                Indicadores: {{ report.indicators.length }}
+              </mat-chip>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noReportsTemplate>
+        <div class="no-reports-message">
+          <mat-icon style="font-size: 28px; color: #757575;">assignment</mat-icon>
+          <p style="color: #757575; text-align: center; margin-top: 8px;">
+            No hay reportes disponibles. Por favor, crea un reporte primero.
+          </p>
+          <button mat-button (click)="onCreateReport()">
+            <mat-icon>add</mat-icon>
+            Crear reporte
+          </button>
+        </div>
+      </ng-template>
+
+      <mat-divider></mat-divider>
+
+      <div class="w-100 d-flex gap-24 m-t-15">
+        <!-- SEMESTRE -->
+        <mat-form-field appearance="outline" class="w-90 ">
+          <mat-label>Semestre</mat-label>
+          <mat-select formControlName="semester" required>
+            <mat-option value="ENE-JUN">ENE-JUN</mat-option>
+            <mat-option value="AGO-DIC">AGO-DIC</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- AÑO -->
+        <mat-form-field appearance="outline" class="w-90 ">
+          <mat-label>Año</mat-label>
+          <input matInput type="number" formControlName="year" min="1975" max="2100" required>
+        </mat-form-field>
+      </div>
+
+      <div class="w-100 d-flex justify-content-between gap-24">
+        <!-- FECHA INICIO -->
+        <mat-form-field appearance="outline" class="w-100 ">
+          <mat-label>Fecha de inicio</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="startDate" required
+            (click)="startPicker.open()">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- FECHA CIERRE -->
+        <mat-form-field appearance="outline" class="w-100 ">
+          <mat-label>Fecha de cierre</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="endDate" required (click)="endPicker.open()">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- FECHA LIMITE DE CAPTURA -->
+      <mat-form-field appearance="outline" class="w-100 ">
+        <mat-label>Fecha límite para capturar</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dueDate" required (click)="picker.open()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="w-100 m-b-20">
+        <!-- TOGGLE ACTIVO/INACTIVO -->
+        <mat-slide-toggle formControlName="isActive">
+          {{ form.get('isActive')?.value ? 'Activo' : 'Inactivo' }}
+        </mat-slide-toggle>
+      </div>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid" class="submit-button">Crear
+        Período</button>
+    </form>
+  </mat-card-content>
+</mat-card>

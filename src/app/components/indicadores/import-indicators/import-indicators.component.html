@@ -1,0 +1,156 @@
+<h2 mat-dialog-title>
+  {{ isReportMode ? 'Importar indicadores para reporte' : 'Importar indicadores' }}
+</h2>
+
+<mat-dialog-content>
+  <div class="global-drag-overlay" *ngIf="globalDragging">
+    <div class="drop-zone highlight">
+      <div class="drop-content">
+        <mat-icon>cloud_upload</mat-icon>
+        <p>Suelta el archivo Excel aquí para importar</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="drop-zone">
+      <div class="drop-content">
+        <mat-icon>cloud_upload</mat-icon>
+        <p>Arrastra tu archivo Excel a cualquier parte de la pantalla o haz clic para seleccionar</p>
+        <input type="file" (change)="onFileSelected($event)" accept=".xlsx" hidden #fileInput>
+        <button mat-raised-button color="primary" (click)="fileInput.click()">Seleccionar archivo</button>
+        <p class="hint">Solo se aceptan archivos .xlsx</p>
+      </div>
+    </div>
+
+    <div *ngIf="previewData.length > 0" class="m-t-20">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3>Vista previa de datos a importar</h3>
+        
+        <!-- Acciones masivas para duplicados -->
+        <div *ngIf="hasDuplicates" style="display: flex; gap: 8px; align-items: center;">
+          <span style="font-size: 14px; color: #666;">Aplicar a todos los duplicados:</span>
+          <button mat-stroked-button color="primary" (click)="applyActionToAll('keep_existing')" style="font-size: 12px;">
+            Mantener existentes
+          </button>
+          <button mat-stroked-button color="accent" (click)="applyActionToAll('overwrite')" style="font-size: 12px;">
+            Sobrescribir todos
+          </button>
+          <button mat-stroked-button color="warn" (click)="applyActionToAll('create_new')" style="font-size: 12px;">
+            Crear nuevos
+          </button>
+        </div>
+      </div>
+
+      <!-- Alerta de duplicados -->
+      <mat-card *ngIf="hasDuplicates" class="duplicate-alert" style="margin-bottom: 16px; background-color: #fff3cd;">
+        <mat-card-content style="padding: 12px; color: #202020;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <mat-icon >warning</mat-icon>
+            <div>
+              <strong>Se encontraron indicadores duplicados</strong>
+              <p style="margin: 4px 0 0 0; font-size: 14px;">
+                {{ isReportMode ? 
+                  'Define las acciones para cada duplicado. Los indicadores se procesarán al crear el reporte.' : 
+                  'Revisa las acciones sugeridas para cada indicador duplicado antes de importar.' 
+                }}
+              </p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="import-table-container">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+          <ng-container matColumnDef="key">
+            <th mat-header-cell *matHeaderCellDef>Clave</th>
+            <td mat-cell *matCellDef="let element" [class.duplicate-row]="element.isDuplicate">
+              {{ element.key }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Descripción</th>
+            <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="goal">
+            <th mat-header-cell *matHeaderCellDef>Meta</th>
+            <td mat-cell *matCellDef="let element">{{ element.goal }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef>Departamentos</th>
+            <td mat-cell *matCellDef="let element">
+              <ul class="department-list">
+                <li *ngFor="let dept of element.departments" [class.invalid-department]="dept.isInvalid">
+                  {{ dept.name }}
+                  <span *ngIf="dept.isInvalid" class="invalid-badge">(inválido)</span>
+                </li>
+              </ul>
+            </td>
+          </ng-container>
+
+          <!-- Columna de estado (solo cuando hay duplicados) -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-chip [class]="getStatusClass(element)">
+                {{ getStatusText(element) }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Columna de acciones (solo cuando hay duplicados) -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Acción</th>
+            <td mat-cell *matCellDef="let element">
+              <div *ngIf="element.isDuplicate">
+                <mat-select 
+                  [value]="element.action" 
+                  (selectionChange)="onActionChange(element, $event.value)"
+                  style="font-size: 12px; min-width: 140px;">
+                  <mat-option value="keep_existing">Mantener existente</mat-option>
+                  <mat-option value="overwrite">Sobrescribir</mat-option>
+                  <mat-option value="create_new">Crear nuevo</mat-option>
+                </mat-select>
+              </div>
+              <span *ngIf="!element.isDuplicate" style="color: #666; font-size: 12px;">
+                Nuevo indicador
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.duplicate-row]="row.isDuplicate"></tr>
+        </table>
+        <mat-paginator 
+          [length]="resultsLength" 
+          [pageSize]="10" 
+          [pageSizeOptions]="[5, 10, 20, 50]"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+      <mat-progress-bar *ngIf="uploadProgress > 0 && uploadProgress < 100" mode="determinate" [value]="uploadProgress"
+        class="m-t-20">
+      </mat-progress-bar>
+    </div>
+  </div>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">Cancelar</button>
+    <span [matTooltip]="hasInvalidDepartments ? 'Corrige los departamentos inválidos antes de continuar' : ''"
+      matTooltipPosition="above">
+      <button mat-raised-button color="primary" (click)="processIndicators()"
+        [disabled]="previewData.length === 0 || uploadProgress > 0 || hasInvalidDepartments">
+        {{ isReportMode ? 'Preparar para reporte' : 'Confirmar e Importar' }}
+      </button>
+    </span>
+  </mat-dialog-actions>
+</mat-dialog-content>

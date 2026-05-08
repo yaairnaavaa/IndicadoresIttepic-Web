@@ -1,0 +1,122 @@
+<div class="dialog-title">
+  <h2 mat-dialog-title>Progreso por departamento</h2>
+
+  <button mat-icon-button [matMenuTriggerFor]="exportMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #exportMenu="matMenu">
+    <button mat-menu-item (click)="exportToExcel()">
+      <mat-icon>download</mat-icon>
+      Exportar a Excel
+    </button>
+  </mat-menu>
+</div>
+
+<mat-dialog-content>
+  <div class="summary">
+    <p><strong>📝 Total de indicadores pendientes:</strong> {{data.total}}</p>
+    <p><strong>🏢 Departamentos mostrados:</strong> {{filteredDepartments.length}} de {{allDepartments.length}}</p>
+  </div>
+
+  <div class="toggle-container">
+    <button mat-stroked-button (click)="toggleFilterPanel()" class="filter-toggle">
+      <mat-icon>{{isFilterExpanded ? 'filter_alt' : 'filter_alt_off'}}</mat-icon>
+      {{isFilterExpanded ? 'Ocultar filtros' : 'Mostrar filtros'}}
+    </button>
+  </div>
+
+  <div class="filters-container" [@filterExpand]="isFilterExpanded ? 'expanded' : 'collapsed'">
+    <div class="filter-row">
+      <mat-form-field appearance="outline" class="department-filter">
+        <mat-label>Filtrar departamentos</mat-label>
+        <mat-select multiple [(ngModel)]="selectedDepartments" (selectionChange)="applyFilters()">
+          <mat-select-trigger>
+            {{selectedDepartments.length}} seleccionados
+          </mat-select-trigger>
+          <mat-option *ngFor="let dept of allDepartments" [value]="dept.departmentId">
+            {{dept.departmentName}} ({{dept.departmentShortName}})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="range">
+        <h4>Progreso</h4>
+        <div class="range-fields">
+
+          <mat-form-field appearance="outline" class="range-filter">
+            <mat-label>Mínimo (%)</mat-label>
+            <input matInput type="number" min="0" max="100" [(ngModel)]="minProgress" (ngModelChange)="applyFilters()">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="range-filter">
+            <mat-label>Máximo (%)</mat-label>
+            <input matInput type="number" min="0" max="100" [(ngModel)]="maxProgress" (ngModelChange)="applyFilters()">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button mat-stroked-button (click)="resetFilters()">
+        <mat-icon>clear_all</mat-icon>
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="filteredDepartments" class="mat-elevation-z2" matSort
+      (matSortChange)="sortData($event)">
+      <!-- Departamento Column -->
+      <ng-container matColumnDef="department" matSortHeader>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Departamento</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="department-info">
+            <span class="name">{{element.departmentName}}</span>
+            <span class="short-name">{{element.departmentShortName}}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Progress Column -->
+      <ng-container matColumnDef="progress" matSortHeader>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Progreso</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="progress-container">
+            <span class="percentage">{{element.percentage}}%</span>
+            <div class="custom-progress-container">
+              <div class="custom-progress-bar" [style.width.%]="element.percentage"
+                [style.background]="getProgressColor(element.percentage)">
+              </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Details Column -->
+      <ng-container matColumnDef="details">
+        <th mat-header-cell *matHeaderCellDef>Detalles</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="details">
+            <span class="detail-item">
+              ✅ {{element.captured}} {{element.captured === 1 ? 'capturado' : 'capturados'}}
+            </span>
+            <span class="detail-item">
+              ⏳ {{element.pending}} {{element.pending === 1 ? 'pendiente' : 'pendientes'}}
+            </span>
+            <span class="detail-item">
+              🏁 {{element.total}} {{element.total === 1 ? 'total' : 'totales'}}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

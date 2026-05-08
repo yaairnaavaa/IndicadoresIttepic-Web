@@ -1,0 +1,52 @@
+<div class="blank-layout-container justify-content-center align-items-center bg-light">
+  <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    <div class="col-lg-4 d-flex align-items-center">
+      <mat-card class="cardWithShadow boxed-auth">
+        <mat-card-content class="p-32">
+          <div class="text-center">
+            <a [routerLink]="['/']">
+              <img [src]="isDarkTheme ? './assets/images/logos/logo-dark.svg' : './assets/images/logos/logo.svg'"
+                class="cintilla" alt="logo" />
+            </a>
+          </div>
+
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+            <!-- Email -->
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Correo</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="uname" />
+            </mat-form-field>
+
+            <!-- Password -->
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Contraseña</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput [type]="passwordFieldType" formControlName="password" />
+              <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+                <mat-icon>{{ isPasswordVisible ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <!-- Recordar / Olvidaste contraseña -->
+            <div class="d-flex align-items-center m-b-12">
+              <mat-checkbox color="primary" formControlName="rememberMe">Recordar este Dispositivo</mat-checkbox>
+              <a [routerLink]="['/']" class="text-primary f-w-600 text-decoration-none m-l-auto f-s-14">¿Olvidaste tu
+                contraseña?</a>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="errorMessage" [@shake]="shakeState" class="text-danger m-b-12">
+              {{ errorMessage }}
+            </div>
+
+
+            <!-- Ingresar -->
+            <button type="submit" mat-flat-button color="primary" class="w-100" [disabled]="form.invalid">
+              Ingresar
+            </button>
+          </form>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

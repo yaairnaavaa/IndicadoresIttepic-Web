@@ -1,0 +1,81 @@
+<h2 mat-dialog-title>Editar Período de captura</h2>
+<mat-dialog-content class="p-t-4">
+  <form [formGroup]="editForm" (ngSubmit)="onSave()" class="form-container">
+    <!-- Carrusel de Reports -->
+    <div *ngIf="reports.length > 0;" class="reports-carousel-container">
+      <h4>Selecciona un reporte:</h4>
+      <div class="reports-carousel">
+        <div *ngFor="let report of reports" [class.selected]="selectedReportId === report._id"
+          (click)="selectReport(report._id!)" class="report-card">
+          <div class="report-card-header">
+            <h2>{{ report.name }}</h2>
+
+          </div>
+          <div class="report-card-content">
+            <mat-chip>
+              <mat-icon matChipAvatar>format_list_bulleted</mat-icon>
+              Indicadores: {{ report.indicators.length }}
+            </mat-chip>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="w-100 d-flex gap-24 m-t-15">
+      <!-- SEMESTRE -->
+      <mat-form-field appearance="outline" class="w-90 ">
+        <mat-label>Semestre</mat-label>
+        <mat-select formControlName="semester" required>
+          <mat-option value="ENE-JUN">ENE-JUN</mat-option>
+          <mat-option value="AGO-DIC">AGO-DIC</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- AÑO -->
+      <mat-form-field appearance="outline" class="w-90 ">
+        <mat-label>Año</mat-label>
+        <input matInput type="number" formControlName="year" min="1975" max="2100" required>
+      </mat-form-field>
+    </div>
+
+    <div class="w-100 d-flex justify-content-between gap-24">
+      <!-- FECHA INICIO -->
+      <mat-form-field appearance="outline" class="w-100 ">
+        <mat-label>Fecha de inicio</mat-label>
+        <input matInput [matDatepicker]="startPicker" formControlName="startDate" required (click)="startPicker.open()">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- FECHA CIERRE -->
+      <mat-form-field appearance="outline" class="w-100 ">
+        <mat-label>Fecha de cierre</mat-label>
+        <input matInput [matDatepicker]="endPicker" formControlName="endDate" required (click)="endPicker.open()">
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- FECHA LIMITE DE CAPTURA -->
+    <mat-form-field appearance="outline" class="w-100 ">
+      <mat-label>Fecha límite para capturar</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate" required (click)="picker.open()">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="w-100 m-b-20">
+      <!-- TOGGLE ACTIVO/INACTIVO -->
+      <mat-slide-toggle formControlName="isActive">
+        {{ editForm.get('isActive')?.value ? 'Activo' : 'Inactivo' }}
+      </mat-slide-toggle>
+    </div>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="editForm.invalid">Guardar</button>
+</mat-dialog-actions>

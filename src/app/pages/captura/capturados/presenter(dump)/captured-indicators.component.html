@@ -1,0 +1,180 @@
+<div *ngIf="!hasData" class="empty-state text-center p-4" @fadeInOut>
+  <img src="assets/images/backgrounds/empty_state-3.svg" alt="Sin datos"
+    style="width: 300px; height: auto; margin-bottom: 16px;" />
+  <p class="text-lg font-semibold text-gray-600">No hay reportes capturados</p>
+</div>
+
+<ng-container *ngIf="!selectedReport; else detailsView">
+
+  <ng-container *ngIf="hasData">
+    <div class="table-container">
+
+      <div class="search-container">
+        <button mat-stroked-button (click)="toggleFilterPanel()" class="filter-toggle">
+          <mat-icon>{{isFilterExpanded ? 'filter_alt' : 'filter_alt_off'}}</mat-icon>
+          {{isFilterExpanded ? 'Ocultar filtros' : 'Mostrar filtros'}}
+        </button>
+
+        <button mat-icon-button [matMenuTriggerFor]="Menu" *ngIf="hasData">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu class="cardWithShadow" #Menu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="exportToExcel()">
+            <mat-icon>download</mat-icon>
+            Exportar a Excel
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="filter-panel" [@filterExpand]="isFilterExpanded ? 'expanded' : 'collapsed'">
+        <form [formGroup]="filterForm" class="filter-form">
+          <div class="filter-row">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Nombre del reporte</mat-label>
+              <input matInput formControlName="name" placeholder="Buscar por nombre" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Semestre</mat-label>
+              <mat-select formControlName="semester" multiple>
+                <mat-option value="ENE-JUN">ENE-JUN</mat-option>
+                <mat-option value="AGO-DIC">AGO-DIC</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="filter-row">
+            <div class="number-range">
+              <h4>Año</h4>
+              <div class="number-range-fields">
+                <mat-form-field appearance="outline">
+                  <mat-label>Desde</mat-label>
+                  <input matInput type="number" formControlName="yearFrom" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Hasta</mat-label>
+                  <input matInput type="number" formControlName="yearTo" />
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="date-range">
+              <h4>Fecha de inicio</h4>
+              <div class="date-range-fields">
+                <mat-form-field appearance="outline">
+                  <mat-label>Desde</mat-label>
+                  <input matInput [matDatepicker]="pickerStartFrom" formControlName="startDateFrom"
+                    (click)="pickerStartFrom.open()">
+                  <mat-datepicker-toggle matSuffix [for]="pickerStartFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStartFrom></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Hasta</mat-label>
+                  <input matInput [matDatepicker]="pickerStartTo" formControlName="startDateTo"
+                    (click)="pickerStartTo.open()">
+                  <mat-datepicker-toggle matSuffix [for]="pickerStartTo"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerStartTo></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-row">
+            <div class="date-range">
+              <h4>Fecha de cierre</h4>
+              <div class="date-range-fields">
+                <mat-form-field appearance="outline">
+                  <mat-label>Desde</mat-label>
+                  <input matInput [matDatepicker]="pickerEndFrom" formControlName="endDateFrom"
+                    (click)="pickerEndFrom.open()">
+                  <mat-datepicker-toggle matSuffix [for]="pickerEndFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEndFrom></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Hasta</mat-label>
+                  <input matInput [matDatepicker]="pickerEndTo" formControlName="endDateTo"
+                    (click)="pickerEndTo.open()">
+                  <mat-datepicker-toggle matSuffix [for]="pickerEndTo"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerEndTo></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button mat-stroked-button type="button" (click)="clearFilters()">
+              <mat-icon>clear_all</mat-icon>
+              Limpiar filtros
+            </button>
+          </div>
+        </form>
+      </div>
+
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+          <td mat-cell *matCellDef="let report">{{ report.index }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="report">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Reporte</th>
+          <td mat-cell *matCellDef="let report">{{ report.reportId.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de inicio</th>
+          <td mat-cell *matCellDef="let report">{{ report.startDate | date:'longDate' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de cierre</th>
+          <td mat-cell *matCellDef="let report">{{ report.endDate | date:'longDate'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="semester">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Semestre</th>
+          <td mat-cell *matCellDef="let report">{{ report.semester }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="year">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Año</th>
+          <td mat-cell *matCellDef="let report">{{ report.year }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let report">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="viewReportDetails(report)">
+                <mat-icon>info</mat-icon>
+                Ver indicadores capturados
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 100]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </ng-container>
+
+</ng-container>
+
+<ng-template #detailsView>
+  <button mat-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    Regresar
+  </button>
+  <app-details-indicators-captured [reportPeriod]="selectedReport!" [isJefeEspecial]="isJefeEspecial"
+    [userDeptId]="userDeptId"></app-details-indicators-captured>
+</ng-template>

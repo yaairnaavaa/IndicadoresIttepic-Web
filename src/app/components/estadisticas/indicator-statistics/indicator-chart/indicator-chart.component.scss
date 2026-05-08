@@ -1,0 +1,57 @@
+.chart-container {
+  width: 100%;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 15px;
+  padding: 16px;
+}
+
+.no-data-message {
+  display: flex;
+  padding: 0 16px;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+
+  background-color: var(--card-bg);
+
+  border: 1px dashed var(--mat-sys-outline-variant);
+  border-radius: 15px;
+}
+
+:host ::ng-deep .apexcharts-legend-group-vertical {
+  flex-direction: row;
+}
+
+:host ::ng-deep .apexcharts-legend-text {
+  color: var(--mat-sys-on-surface-variant) !important;
+}
+
+:host ::ng-deep .apexcharts-text {
+  color: #48ff00 !important;
+}
+
+// Estilos para los tooltips
+:host ::ng-deep .apexcharts-tooltip {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--mat-sys-outline-variant) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+:host ::ng-deep .apexcharts-tooltip-title {
+  font-weight: 600 !important;
+  background: var(--card-bg)  !important;
+  font-size: 13px !important;
+  margin-bottom: 5px !important;
+  border-bottom: 1px solid var(--mat-sys-outline-variant) !important;
+  padding-bottom: 5px !important;
+}
+
+@media (max-width: 1000px) {
+
+  .chart-container {
+    min-height: 300px;
+  }
+
+}

@@ -1,0 +1,201 @@
+.table-container {
+  border: 1px solid var(--mat-sys-outline);
+  margin-top: 25px;
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 18px;
+}
+
+.selected-list {
+  margin-bottom: 16px;
+
+  h4 {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  mat-chip-listbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  mat-chip {
+    max-width: 100%;
+    height: auto;
+    padding: 8px 12px;
+  }
+}
+
+.selected {
+  background-color: #003cff09 !important;
+}
+
+.mat-column-select {
+  width: 48px;
+  text-align: center;
+}
+
+.mat-checkbox {
+  margin-right: 8px;
+}
+
+.no-indicators-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+  border: 1px dashed var(--mat-sys-outline);
+  border-radius: 16px;
+  margin: 4px 0;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.form-container {
+  padding: 4px;
+  margin: auto 0;
+
+  .submit-button {
+    margin-top: 16px;
+    width: 100%;
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  gap: 16px;
+
+  h3 {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 500;
+  }
+}
+
+// Nuevos estilos migrados desde el HTML
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  
+  .form-field {
+    flex: 1 1 300px;
+    min-width: 250px;
+  }
+}
+
+.import-info-alert {
+  margin-bottom: 16px;
+  
+  .import-alert-content {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    .alert-text {
+      strong {
+        display: block;
+      }
+      
+      p {
+        margin: 4px 0 0 0;
+        color: #666;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Media queries para responsividad
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    
+    .header-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+  
+  .form-row {
+    gap: 15px;
+    
+    .form-field {
+      flex: 1 1 100%;
+      min-width: unset;
+    }
+  }
+  
+  .import-info-alert {
+    .import-alert-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .card-header {
+    .header-actions {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+  
+  .selected-list {
+    mat-chip {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+  
+  .table-container {
+    border-radius: 12px;
+    margin-top: 15px;
+  }
+
+  .no-indicators-message{
+    font-size: 11px;
+    text-align: center;
+
+    mat-icon{
+      font-size: 15px;
+    }
+  }
+}

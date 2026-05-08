@@ -1,0 +1,70 @@
+<div class="filters-container" *ngIf="reportPeriodsInfo.length">
+  <!-- Filtro de Reportes -->
+  <mat-form-field appearance="outline" class="large-field">
+    <mat-label>Reportes</mat-label>
+    <mat-select [(value)]="selectedPeriodIds" multiple (selectionChange)="onFilterChange()">
+      <mat-optgroup label="Reportes activos" *ngIf="activeReports.length > 0">
+        <mat-option *ngFor="let report of activeReports" [value]="report._id">
+          {{report.reportName}}
+        </mat-option>
+      </mat-optgroup>
+      <mat-optgroup label="Reportes expirados" *ngIf="expiredReports.length > 0">
+        <mat-option *ngFor="let report of expiredReports" [value]="report._id">
+          {{report.reportName}}
+        </mat-option>
+      </mat-optgroup>
+      <mat-optgroup label="Reportes inactivos" *ngIf="inactiveReports.length > 0">
+        <mat-option *ngFor="let report of inactiveReports" [value]="report._id">
+          {{report.reportName}}
+        </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Filtros de fecha -->
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha de inicio</mat-label>
+    <input matInput [matDatepicker]="pickerStart" [(ngModel)]="selectedStartDate" (dateChange)="onFilterChange()"
+      (click)="pickerStart.open()">
+    <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+    <mat-datepicker #pickerStart></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Fecha de cierre</mat-label>
+    <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="selectedEndDate" (dateChange)="onFilterChange()"
+      (click)="pickerEnd.open()">
+    <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+    <mat-datepicker #pickerEnd></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Filtro de Departamentos-->
+  <mat-form-field appearance="outline" class="large-field">
+    <mat-label>Departamentos</mat-label>
+    <mat-select [(value)]="selectedDepartmentIds" multiple (selectionChange)="onFilterChange()">
+      <mat-option *ngFor="let dept of departments" [value]="dept._id">{{dept.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Filtro de Semestres-->
+  <mat-form-field appearance="outline">
+    <mat-label>Semestres</mat-label>
+    <mat-select [(value)]="selectedSemesters" multiple (selectionChange)="onFilterChange()">
+      <mat-option value="ENE-JUN">ENE-JUN</mat-option>
+      <mat-option value="AGO-DIC">AGO-DIC</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Filtro de Años-->
+  <mat-form-field appearance="outline">
+    <mat-label>Años</mat-label>
+    <mat-select [(value)]="selectedYears" multiple (selectionChange)="onFilterChange()">
+      <mat-option *ngFor="let report of reportPeriodsInfo" [value]="report.year">{{report.year}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-stroked-button (click)="clearFilters()" class="clear-button" *ngIf="hasActiveFilters">
+    <mat-icon>clear_all</mat-icon>
+    Limpiar Filtros
+  </button>
+</div>

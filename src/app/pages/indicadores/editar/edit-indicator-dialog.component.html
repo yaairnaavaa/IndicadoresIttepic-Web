@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>Editar Indicador</h2>
+<mat-dialog-content class="p-t-4">
+  <form [formGroup]="editForm" class="p-4 d-grid gap-8 max-w-xl mx-auto">
+    <!-- CLAVE -->
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Clave</mat-label>
+      <input matInput formControlName="key" required>
+      <mat-error *ngIf="editForm.get('key')?.hasError('required')">
+        La clave es requerida
+      </mat-error>
+      <mat-error *ngIf="editForm.get('key')?.hasError('duplicate')">
+        Esta clave ya existe en otro indicador
+      </mat-error>
+    </mat-form-field>
+
+    <!-- NOMBRE INDICADOR -->
+    <mat-form-field appearance="outline" class="w-100 ">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="editForm.get('name')?.hasError('required')">
+        Campo requerido
+      </mat-error>
+    </mat-form-field>
+
+    <!-- DESCRIPCION -->
+    <mat-form-field appearance="outline" class="w-100 ">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+
+    <!-- META -->
+    <mat-form-field appearance="outline" class="w-100 ">
+      <mat-label>Meta</mat-label>
+      <input matInput type="number" formControlName="goal" required>
+      <mat-error *ngIf="editForm.get('goal')?.hasError('required')">
+        Campo requerido
+      </mat-error>
+      <mat-error *ngIf="editForm.get('goal')?.hasError('min')">
+        La meta debe ser un número positivo
+      </mat-error>
+    </mat-form-field>
+
+    <!-- DEPARTAMENTOS -->
+    <mat-form-field appearance="outline" class="w-100 ">
+      <mat-label>Departamentos</mat-label>
+      <mat-select formControlName="departments" multiple>
+        <mat-option *ngFor="let dept of departments" [value]="dept">
+          {{ dept.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="editForm.get('departments')?.hasError('required')">
+        Debes seleccionar al menos un departamento
+      </mat-error>
+    </mat-form-field>
+
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="editForm.invalid">Guardar</button>
+</mat-dialog-actions>

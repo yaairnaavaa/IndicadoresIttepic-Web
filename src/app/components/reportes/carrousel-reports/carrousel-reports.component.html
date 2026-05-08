@@ -1,0 +1,54 @@
+<div *ngIf="reports.length > 0" class="search-container">
+  <mat-form-field appearance="outline" floatLabel="always">
+    <input matInput placeholder="Buscar reportes" [(ngModel)]="searchTerm" (input)="filterReports()">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <button mat-stroked-button (click)="onCreate()">
+    <mat-icon>add</mat-icon>
+    Nuevo reporte
+  </button>
+</div>
+
+<div class="reports-carousel">
+  <div *ngFor="let report of filteredReports" (click)="selectReport(report._id!)" class="report-card">
+    <div class="report-card-header">
+      <h2>{{ report.name }}</h2>
+
+      <button mat-icon-button [matMenuTriggerFor]="Menu">
+        <mat-icon style="color: white;">more_vert</mat-icon>
+      </button>
+      <mat-menu class="cardWithShadow" #Menu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="openDetailsDialog(selectedReportId!)">
+          <mat-icon class="dark">info</mat-icon>
+          Ver detalles
+        </button>
+
+        <button mat-menu-item (click)="editReport(report)">
+          <mat-icon class="dark">edit</mat-icon>
+          Editar reporte
+        </button>
+      </mat-menu>
+    </div>
+    <div class="report-card-content">
+      <mat-chip>
+        <mat-icon matChipAvatar>format_list_bulleted</mat-icon>
+        Indicadores: {{ report.indicators.length }}
+      </mat-chip>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="filteredReports.length === 0" class="empty-state">
+  <div class="empty-state-content">
+    <mat-icon class="empty-state-icon">assignment</mat-icon>
+    <p *ngIf="searchTerm">No se encontraron reportes que coincidan con "{{ searchTerm }}"</p>
+    <h3 *ngIf="!searchTerm">No hay reportes disponibles</h3>
+    <p *ngIf="!searchTerm">Parece que aún no has creado ningún reporte. Comienza creando uno nuevo.
+      <button mat-button (click)="onCreate()">
+        <mat-icon>add</mat-icon>
+        Crear reporte
+      </button>
+    </p>
+  </div>
+</div>

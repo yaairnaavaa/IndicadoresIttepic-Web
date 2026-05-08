@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Detalles del indicador</h2>
+<mat-dialog-content class="content">
+  <p><strong>Reporte: </strong> {{ data.reportPeriod.reportId.name }}</p>
+  <p><strong>Nombre: </strong> {{ data.definition.name }}</p>
+  <p *ngIf="data.definition.description"><strong>Descripción:</strong> {{ data.definition.description }}</p>
+  <p><strong>Meta: </strong> {{ data.definition.goal }}</p>
+  <p><strong>Valor capturado: </strong> {{ data.value }}</p>
+  <p *ngIf="data.comments"><strong>Comentarios:</strong> {{ data.comments }}</p>
+  <p><strong>Departamento: </strong>{{data.department.name}}</p>
+  <p><strong>Fecha de captura: </strong> {{ data.updatedAt | date:'fullDate' }}</p>
+  <p><strong>Capturado por: </strong>{{ getLatestChange()?.user?.employeeId?.name?.fullName }}</p>
+</mat-dialog-content>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</div>

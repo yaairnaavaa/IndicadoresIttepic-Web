@@ -1,0 +1,8 @@
+.cintilla {
+  width: 19rem;
+  height: auto;
+
+  @media(max-width: 400px) {
+    width: 15rem;
+  }
+}

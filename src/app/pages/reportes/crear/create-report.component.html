@@ -1,0 +1,113 @@
+<mat-card class="cardWithShadow" @fadeInOut>
+  <mat-card-content>
+    <div class="card-header">
+      <span class="card-title">Nuevo reporte de indicadores</span>
+
+      <div class="header-actions">
+        <!-- Botón de importar -->
+        <button mat-flat-button color="primary" (click)="openImportDialog()">
+          <mat-icon>upload</mat-icon>
+          Importar Indicadores
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- SELECCIÓN NOMBRE REPORTE -->
+      <div class="form-row">
+        <!-- SELECT -->
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Selecciona nombre del reporte</mat-label>
+          <mat-select formControlName="reportNameSelect" required>
+            <mat-option *ngFor="let option of reportNameOptions" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('reportNameSelect')?.hasError('required')">
+            Debes seleccionar un nombre de reporte.
+          </mat-error>
+        </mat-form-field>
+
+        <!-- INPUT MANUAL (ANIMADO) -->
+        <div *ngIf="form.get('reportNameSelect')?.value?.startsWith('Otro')" @fadeSlide class="form-field">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nuevo reporte</mat-label>
+            <input matInput formControlName="customReportName" placeholder="Ingresa nombre del reporte">
+            <mat-error *ngIf="form.get('customReportName')?.hasError('required')">
+              Debes ingresar un nombre.
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- DESCRIPCION -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Descripción (opcional)</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      <!-- INDICADORES SELECCIONADOS -->
+      <div class="selected-list">
+        <h4>Indicadores seleccionados:</h4>
+        <mat-chip-listbox>
+          <ng-container *ngIf="selectedIndicators.length > 0; else noIndicators">
+            <mat-chip *ngFor="let ind of selectedIndicators" color="primary" selected (removed)="removeSelected(ind)"
+              [matTooltip]="ind.name" matTooltipPosition="below">
+              {{ ind.name | truncate:36 }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </ng-container>
+          <ng-template #noIndicators>
+            <div class="no-indicators-message">
+              <mat-icon>info</mat-icon>
+              <span>No hay indicadores seleccionados</span>
+            </div>
+          </ng-template>
+        </mat-chip-listbox>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- ALERTA DE INDICADORES IMPORTADOS -->
+      <div *ngIf="hasImportedData" class="import-info-alert">
+        <mat-card class="import-alert">
+          <mat-card-content class="import-alert-content">
+            <mat-icon color="accent">schedule</mat-icon>
+            <div class="alert-text">
+              <strong>Indicadores pendientes de procesar</strong>
+              <p>
+                Se procesarán {{ importedIndicators.length }} indicadores al crear el reporte. 
+                <span *ngIf="hasDuplicates">Los duplicados se manejarán según las acciones seleccionadas.</span>
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- TABLA -->
+      <div *ngIf="!isLoading; else loading" class="table-container">
+        <app-indicator-table 
+          [data]="getDisplayedIndicators()" 
+          [displayedColumns]="displayedColumns" 
+          [showCheckboxes]="true"
+          [pageSize]="10" 
+          [pageSizeOptions]="[5, 10, 20, 100]" 
+          [selectAll]="hasImportedData" 
+          (rowSelected)="onIndicatorsSelected($event)">
+        </app-indicator-table>
+      </div>
+      <ng-template #loading>
+        <div class="loading-state">
+          <mat-spinner diameter="50"></mat-spinner>
+          <h3>Cargando indicadores...</h3>
+        </div>
+      </ng-template>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid" class="submit-button">
+        Crear Reporte
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

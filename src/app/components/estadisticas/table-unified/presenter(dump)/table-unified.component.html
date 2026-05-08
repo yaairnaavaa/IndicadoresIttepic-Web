@@ -1,0 +1,306 @@
+<div class="table-container">
+  <div class="search-container" *ngIf="data.length">
+    <button mat-stroked-button (click)="toggleFilterPanel()" class="filter-toggle">
+      <mat-icon>{{isFilterExpanded ? 'filter_alt' : 'filter_alt_off'}}</mat-icon>
+      {{isFilterExpanded ? 'Ocultar filtros' : 'Mostrar filtros'}}
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="Menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu class="cardWithShadow" #Menu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="exportToExcel()">
+        <mat-icon>download</mat-icon>
+        Exportar a Excel
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="filter-panel" [@filterExpand]="isFilterExpanded ? 'expanded' : 'collapsed'">
+    <form [formGroup]="filterForm" class="filter-form">
+      <div class="filter-row">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Buscar por clave o nombre</mat-label>
+          <input matInput formControlName="search" placeholder="Clave o nombre">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Reportes</mat-label>
+          <mat-select formControlName="reports">
+            <mat-option *ngFor="let report of reportOptions" [value]="report">{{report}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="filter-row">
+        <div class="date-range">
+          <h4>Fecha de inicio</h4>
+          <div class="date-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput [matDatepicker]="pickerStartFrom" formControlName="startDateFrom"
+                (click)="pickerStartFrom.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerStartFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerStartFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput [matDatepicker]="pickerStartTo" formControlName="startDateTo"
+                (click)="pickerStartTo.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerStartTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerStartTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="date-range">
+          <h4>Fecha de cierre</h4>
+          <div class="date-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput [matDatepicker]="pickerEndFrom" formControlName="endDateFrom"
+                (click)="pickerEndFrom.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerEndFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerEndFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput [matDatepicker]="pickerEndTo" formControlName="endDateTo" (click)="pickerEndTo.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerEndTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerEndTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Departamentos</mat-label>
+          <mat-select formControlName="departments" multiple>
+            <mat-option *ngFor="let dept of departmentOptions" [value]="dept">{{dept}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Semestre</mat-label>
+          <mat-select formControlName="semester">
+            <mat-option *ngFor="let sem of semesterOptions" [value]="sem">{{sem}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="number-range">
+          <h4>Año</h4>
+          <div class="number-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput type="number" formControlName="yearFrom" placeholder="Ej. 2020">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput type="number" formControlName="yearTo" placeholder="Ej. 2023">
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="filter-row">
+        <div class="number-range">
+          <h4>Meta</h4>
+          <div class="number-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput type="number" formControlName="goalFrom">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput type="number" formControlName="goalTo">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="number-range">
+          <h4>Valor</h4>
+          <div class="number-range-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Estado</mat-label>
+              <mat-select formControlName="status" multiple>
+                <mat-option *ngFor="let status of statusOptions" [value]="status">{{status}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Desde</mat-label>
+              <input matInput type="number" formControlName="valueFrom">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hasta</mat-label>
+              <input matInput type="number" formControlName="valueTo">
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-stroked-button type="button" (click)="clearFilters()">
+          <mat-icon>clear_all</mat-icon>
+          Limpiar filtros
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort>
+
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.index }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="key">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Clave</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.key }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="report">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Reporte</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.report }}</td>
+    </ng-container>
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de inicio</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.startDate | date:'longDate' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="endDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de cierre</th>
+      <td mat-cell *matCellDef="let indicator">{{ indicator.endDate | date:'longDate' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="department">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Departamento</th>
+      <td mat-cell *matCellDef="let indicator">
+        {{ indicator.departmentName }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="semester">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Semestre</th>
+      <td mat-cell *matCellDef="let indicator" class="text-center">{{ indicator.periodSemester }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Año</th>
+      <td mat-cell *matCellDef="let indicator" class="text-center">{{ indicator.periodYear }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="goal">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Meta</th>
+      <td mat-cell *matCellDef="let indicator" class="text-center">{{ indicator.goal }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef class="text-center">Valor</th>
+      <td mat-cell *matCellDef="let indicator" class="text-center">
+        <ng-container *ngIf="indicator.dataValue !== null; else noValue">
+          {{ indicator.dataValue }}
+        </ng-container>
+        <ng-template #noValue>
+          <span class="rounded-pill f-s-12 f-w-500 p-x-8 p-y-4 text-nowrap" [ngClass]="{
+          'bg-light-warning text-warning': indicator.status === 'Pendiente',
+          'bg-light-error text-error': indicator.status === 'No capturado'
+        }">
+            {{ indicator.status }}
+          </span>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expand">
+      <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+        &nbsp;
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button aria-label="expand row"
+          (click)="expandedElement = expandedElement === element ? null : element;$event.stopPropagation()">
+          @if(expandedElement !== element) {
+          <mat-icon>keyboard_arrow_down</mat-icon>
+          } @if(expandedElement === element) {
+          <mat-icon>keyboard_arrow_up</mat-icon>
+          }
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'" class="example-element-detail">
+          <div class="p-15 rounded b-1 m-b-16 m-x-18">
+            <div class="d-flex align-items-center gap-12">
+              <span
+                class="bg-light-primary text-primary icon-48 rounded f-w-600 d-flex align-items-center justify-content-center">
+                {{ element.goal }}
+              </span>
+              <div>
+                <div class="f-s-14 f-w-600 ">
+                  {{ element.name }}
+                </div>
+                <div class="f-s-14">{{ element.departmentName }}</div>
+              </div>
+            </div>
+
+            <div class="f-s-14 m-t-8" *ngIf="element.description">
+              🗒️ Descripción: {{ element.description }}
+            </div>
+            <div class="f-s-14 m-t-8" *ngIf="element.comments">
+              Comentarios del capturador: {{ element.comments }}
+            </div>
+
+            <mat-list *ngIf="element.changesLog?.length; else noChanges">
+              <mat-divider></mat-divider>
+              <p><strong>Registro de cambios</strong> </p>
+              <mat-list-item *ngFor="let change of element.changesLog">
+                <div matLine>
+                  <strong>{{ change.date | date:'fullDate' }}</strong> —
+                  {{ getUserGrade(change.user.employeeId?.grade) }}
+                  {{ change.user.employeeId?.name?.fullName }}
+                </div>
+                <div matLine>
+                  <small>{{ change.user.email }}</small>
+                </div>
+              </mat-list-item>
+            </mat-list>
+
+            <ng-template #noChanges>
+              <p>No se han registrado cambios.</p>
+            </ng-template>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  </table>
+
+  <div *ngIf="!data.length" class="empty-state">
+    <mat-icon>inbox</mat-icon>
+    <h3>No hay indicadores disponibles</h3>
+    <p>Aquí se mostrarán los datos de los indicadores de todos los períodos de captura.</p>
+  </div>
+
+  <mat-paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20,100,500]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>
